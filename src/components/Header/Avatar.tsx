@@ -1,12 +1,11 @@
-'use client';
+"use client";
 
-import type { FC } from 'react';
-import { useRef, useState, useEffect } from 'react';
+import type { FC } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { motion } from 'framer-motion';
-import { Avatar } from 'primereact/avatar';
-import { Button } from 'primereact/button';
+import { Avatar } from "primereact/avatar";
+import { Button } from "primereact/button";
 import { OverlayPanel } from "primereact/overlaypanel";
 
 import { MdOutlineAccountCircle } from "react-icons/md";
@@ -25,89 +24,130 @@ import { FaTelegram } from "react-icons/fa6";
 
 import ContactUsModal from "./ContactUsModal";
 
-import Icon from '@/molecules/Icon';
-import '@/styles/custom.scss';
+import Icon from "@/molecules/Icon";
+import "@/styles/custom.scss";
+import RequestNewModal from "./RequestNewModal";
 
 interface AvatarProps {
   className?: string;
   mode?: string;
 }
 
-const Avatars: FC<AvatarProps> = ({ mode = 'light' }) => {
+// // New RequestNewModal Component
+// const RequestNewModal: FC<{ visible: boolean; onHide: () => void }> = ({
+//   visible,
+//   onHide,
+// }) => (
+//   <div
+//     className={`fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50 ${
+//       visible ? "block" : "hidden"
+//     }`}
+//   >
+//     <div className="bg-white rounded-lg shadow-lg w-96 p-5">
+//       <h2 className="text-xl font-semibold mb-4">Request New Content</h2>
+//       <p className="text-sm text-gray-700 mb-4">
+//         Submit your request for new content here.
+//       </p>
+//       <textarea
+//         rows={4}
+//         className="w-full p-2 border rounded-md mb-4 focus:outline-none"
+//         placeholder="Describe your content request..."
+//       />
+//       <div className="flex justify-end gap-2">
+//         <Button
+//           label="Cancel"
+//           className="p-button-secondary"
+//           onClick={onHide}
+//         />
+//         <Button label="Submit" className="p-button-primary" onClick={onHide} />
+//       </div>
+//     </div>
+//   </div>
+// );
+
+const Avatars: FC<AvatarProps> = ({ mode = "light" }) => {
   const router = useRouter();
   const op = useRef<OverlayPanel>(null);
-  const [supportModalVisible, setSupportModalVisible] = useState<boolean>(false);
+  const [supportModalVisible, setSupportModalVisible] =
+    useState<boolean>(false);
+  const [RequestNewModalVisible, setRequestNewModalVisible] =
+    useState<boolean>(false);
 
   const menuItems = [
     {
-      icon: <Icon icon='preferences' size={16} />,
+      icon: <Icon icon="preferences" size={16} />,
       href: "/preferences",
-      label: "Preferences"
+      label: "Preferences",
     },
     {
-      icon: <Icon icon='account_details' size={16} />,
+      icon: <Icon icon="account_details" size={16} />,
       href: "/account",
-      label: "Account Details"
+      label: "Account Details",
     },
     {
       icon: <MdOutlineAccountCircle />,
       href: "/billing",
-      label: "Billing"
+      label: "Billing",
     },
     {
       icon: <IoMdLock />,
       href: "/security",
-      label: "Sign In & Security"
+      label: "Sign In & Security",
     },
     {
       icon: <GoQuestion />,
       href: "/support",
-      label: "Support"
+      label: "Support",
     },
     {
-      icon: <Icon icon='teams' size={16} />,
+      icon: <Icon icon="teams" size={16} />,
       href: "/team",
-      label: "Team"
+      label: "Team",
     },
     {
       icon: <RiGalleryView2 />,
       href: "/request_new_content",
-      label: "Request New Content"
+      label: "Request New Content",
     },
     {
       icon: <TbWriting />,
       href: "/highlighters",
-      label: "Highlighters"
+      label: "Highlighters",
     },
     {
       icon: <MdLogout />,
       isTopBorder: true,
       href: "/",
-      label: "Logout"
+      label: "Logout",
     },
   ];
 
   const handleButtons = (href: string, label: string) => {
-    if (label === 'Support') {
+    if (label === "Support") {
       setSupportModalVisible(true);
       op.current?.hide(); // Hide the OverlayPanel
-    }
-    else {
+    } else if (label === "Request New Content") {
+      setRequestNewModalVisible(true);
+      op.current?.hide(); // Hide the OverlayPanel
+    } else {
       router.push(href);
     }
-  }
+  };
 
   return (
     <div className="flex justify-center items-center px-3 border-l-2">
       <Avatar
         label="AZ"
-        className='cursor-pointer rounded-full bg-indigo-200 shadow-lg w-[40px] h-[40px]'
+        className="cursor-pointer rounded-full bg-indigo-200 shadow-lg w-[40px] h-[40px]"
         shape="circle"
         onClick={(e) => op.current?.toggle(e)}
       />
 
       {/* Overlay Panel */}
-      <OverlayPanel ref={op} className="w-[300px] shadow-lg rounded-md p-overlaypanel-content-avatar">
+      <OverlayPanel
+        ref={op}
+        className="w-[300px] shadow-lg rounded-md p-overlaypanel-content-avatar"
+      >
         {/* User Info */}
         <div className="border-b pb-3 px-5">
           <div className="text-base font-semibold">Daniel Lopez</div>
@@ -120,8 +160,13 @@ const Avatars: FC<AvatarProps> = ({ mode = 'light' }) => {
         {/* Menu Items */}
         <ul>
           {menuItems.map((item, index) => (
-            <Button className={`w-full hover:bg-gray-100 active:bg-gray-300 focus:ring-0 ${item.isTopBorder && ' border-t py-4'}`}
-              onClick={() => handleButtons(item.href, item.label)} key={index}>
+            <Button
+              className={`w-full hover:bg-gray-100 active:bg-gray-300 focus:ring-0 ${
+                item.isTopBorder && " border-t py-4"
+              }`}
+              onClick={() => handleButtons(item.href, item.label)}
+              key={index}
+            >
               <li
                 key={index}
                 className="flex items-center gap-3 py-2 px-5 cursor-pointer "
@@ -132,7 +177,6 @@ const Avatars: FC<AvatarProps> = ({ mode = 'light' }) => {
             </Button>
           ))}
         </ul>
-
         {/* Logout Section */}
         <div className="border-t pt-3 px-5">
           <div className="flex justify-between items-center mb-2">
@@ -168,9 +212,21 @@ const Avatars: FC<AvatarProps> = ({ mode = 'light' }) => {
         </div>
       </OverlayPanel>
 
-      {supportModalVisible && <ContactUsModal visible={supportModalVisible} onHide={() => setSupportModalVisible(false)} />}
+      {/* Modals */}
+      {supportModalVisible && (
+        <ContactUsModal
+          visible={supportModalVisible}
+          onHide={() => setSupportModalVisible(false)}
+        />
+      )}
+      {RequestNewModalVisible && (
+        <RequestNewModal
+          visible={RequestNewModalVisible}
+          onHide={() => setRequestNewModalVisible(false)}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default Avatars;
